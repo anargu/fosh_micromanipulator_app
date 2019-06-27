@@ -2,6 +2,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fosh_micromanipulator_app/visor_controller.dart';
 
 import 'foshma_colors.dart';
 
@@ -99,15 +100,15 @@ class MiscroscopeVisorViewState extends State<MiscroscopeVisorView> {
               // 60   .   x    . 
               // 120  x   .    x 
               
-              {'left': 60.0, 'top': 0.0},
-              {'left': 0.0, 'top': 60.0},
-              {'left': 120.0, 'top': 60.0},
-              {'left': 60.0, 'top': 120.0}
+              {'left': 60.0, 'top': 0.0, 'action': ActionType.UP },
+              {'left': 0.0, 'top': 60.0, 'action': ActionType.LEFT },
+              {'left': 120.0, 'top': 60.0, 'action': ActionType.RIGHT },
+              {'left': 60.0, 'top': 120.0, 'action': ActionType.DOWN }
             ].map((v) => Positioned(
               left: v['left'],
               top: v['top'],
               child: GestureDetector(
-                onTap: () {},
+                onTap: _onTapAction(v['action']),
                 child: Container(
                   decoration: BoxDecoration(
                     color: FoshMAColors.primaryColor,
@@ -122,5 +123,11 @@ class MiscroscopeVisorViewState extends State<MiscroscopeVisorView> {
         ),
       ),
     );
+  }
+
+  _onTapAction(ActionType action) {
+    return () {
+      print('action triggered ${action.toString()}');
+    };
   }
 }
