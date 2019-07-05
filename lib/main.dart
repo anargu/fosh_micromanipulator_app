@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fosh_micromanipulator_app/foshma_colors.dart';
+import 'package:fosh_micromanipulator_app/views/visor_view.dart';
 
-import 'miscroscope_visor_view.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,9 +26,10 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primaryColor: FoshMAColors.primaryColor,
+        accentColor: FoshMAColors.primaryColor,
       ),
-      home: MiscroscopeVisorView(),
+      home: VisorView(),
     );
   }
 }
