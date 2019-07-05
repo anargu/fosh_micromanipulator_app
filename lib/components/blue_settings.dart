@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -16,12 +17,12 @@ class BlueSettingsState extends State<BlueSettings> {
 
   bool _isConnecting = false;
   String _address;
-  // StreamSubscription<BluetoothDiscoveryResult> _streamSubscription;
+  StreamSubscription<BluetoothDiscoveryResult> _streamSubscription;
 
   @override
   void initState() {
     super.initState();
-    // _showSnackbar('Holaaa');
+    _discoverBlueDevices();
   }
 
   @override
@@ -32,7 +33,7 @@ class BlueSettingsState extends State<BlueSettings> {
       child: Container(
         child: !_isConnecting
         ? GestureDetector(
-          onTap: () { _showSnackbar('Holaaaa'); }, // _onBlueSettingsTap(context),
+          onTap: _onBlueSettingsTap(context),
           child: Center(
             child: Icon(
               FoshMAIcons.bluetooth, size: 22.0,
@@ -54,7 +55,7 @@ class BlueSettingsState extends State<BlueSettings> {
               borderRadius: BorderRadius.circular(16.0),
             ),
             elevation: 0.0,
-            backgroundColor: Colors.white,
+            backgroundColor: FoshMAColors.darkColor,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
@@ -80,8 +81,10 @@ class BlueSettingsState extends State<BlueSettings> {
                     },
                   ),
                   FlatButton(
-                    onPressed: _connect2Address,
-                    child: Text('CONNECT')
+                    onPressed: _onTap2Connect,
+                    child: Text(
+                      'CONNECT',
+                      style: TextStyle(color: FoshMAColors.primaryColor)),
                   )
                 ]
                 ),
@@ -91,7 +94,7 @@ class BlueSettingsState extends State<BlueSettings> {
     };
   }
 
-  _connect2Address() async {
+  _onTap2Connect() async {
     if (_address == null) {
       _showSnackbar('Put an address');
       return;
@@ -127,6 +130,7 @@ class BlueSettingsState extends State<BlueSettings> {
   _connect2BluetoothDevice(String address) async {
     // Some simplest connection :F
     try {
+      await _checkBluetoothEnabled();
       BluetoothConnection connection = await BluetoothConnection.toAddress(address);
       print('Connected to the device');
       _showSnackbar('Connected to the device');
@@ -152,9 +156,34 @@ class BlueSettingsState extends State<BlueSettings> {
     }
     catch (exception) {
         print('Cannot connect, exception occured');
-        _showSnackbar('Cannot connect to device, something is missing or error ocurred');
+        _showSnackbar('Cannot connect to device, something is missing or error ocurred or bluetooth is not enabled');
         return false;
     }
+  }
+
+  _checkBluetoothEnabled() async {
+    final bool isOn = await FlutterBluetoothSerial.instance.isEnabled;
+    if (!isOn) {
+      final requestResult = await FlutterBluetoothSerial.instance.requestEnable();
+      print('*** requestResult $requestResult');
+      if (!requestResult) {
+        throw Exception('bluetooth is not turned on');
+      }
+      return requestResult;
+    }
+    return isOn;
+  }
+
+  _discoverBlueDevices() async {
+    await _checkBluetoothEnabled();
+    _streamSubscription = FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
+      print('*** device found ${r.device.name} - ${r.device.address}\n');
+      // setState(() { results.add(r); });
+    });
+    
+    _streamSubscription.onDone(() {
+      // setState(() { isDiscovering = false; });
+    });
   }
 
 }

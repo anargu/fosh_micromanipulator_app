@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primaryColor: FoshMAColors.primaryColor,
         accentColor: FoshMAColors.primaryColor,
+        brightness: Brightness.dark
       ),
       home: VisorView(),
     );

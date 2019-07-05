@@ -112,5 +112,4 @@ class VisorViewState extends State<VisorView> {
   //   });
   // }
 
-
 }

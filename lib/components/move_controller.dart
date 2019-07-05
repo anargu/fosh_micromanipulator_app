@@ -88,7 +88,7 @@ class MoveControllerState extends State<MoveController> with SingleTickerProvide
                   ),
                   width: 60,
                   height: 60,
-                  child: Center(child: Icon(v['icon'], size: 32.0,)),
+                  child: Center(child: Icon(v['icon'], size: 32.0, color: FoshMAColors.darkColor)),
                 ),
               ),
             ))
