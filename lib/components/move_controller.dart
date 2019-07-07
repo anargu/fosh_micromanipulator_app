@@ -13,9 +13,6 @@ class MoveController extends StatefulWidget {
 class MoveControllerState extends State<MoveController> with SingleTickerProviderStateMixin {
 
 
-  // Animation<double> animation;
-  // AnimationController animationController;
-
   final controls = [
     {
       'left': 60.0,
@@ -45,19 +42,6 @@ class MoveControllerState extends State<MoveController> with SingleTickerProvide
   @override
   void initState() {
     super.initState();
-    // animationController = AnimationController(
-    //   duration: const Duration(milliseconds: 100),
-    //   vsync: this
-    // );
-    // animation = Tween<double>(begin: 0, end: 10.0).animate(animationController)
-    //   ..addListener(() {
-    //     setState(() {});
-    //   })
-    //   ..addStatusListener((status) {
-    //     if (status == AnimationStatus.completed) {
-    //       animationController.reverse();
-    //     }
-    //   });
   }
 
   @override
