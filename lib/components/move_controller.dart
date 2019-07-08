@@ -93,7 +93,21 @@ class MoveControllerState extends State<MoveController> with SingleTickerProvide
     return () {
       try {
         print('action triggered ${action.toString()}');
-        _bluetoothProvider.putValue(action.toString());
+        switch (action) {
+          case ActionType.UP:
+            _bluetoothProvider.putValue('UP\n');        
+            break;
+          case ActionType.DOWN:
+            _bluetoothProvider.putValue('DOWN\n');
+            break;
+          case ActionType.LEFT:
+            _bluetoothProvider.putValue('LEFT\n');
+            break;
+          case ActionType.RIGHT:
+            _bluetoothProvider.putValue('RIGHT\n');            
+            break;
+          default:
+        }
       } catch (e) {
         showSnackbar(context, e.toString());
       }
