@@ -1,12 +1,11 @@
 
-import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:fosh_micromanipulator_app/components/snackbar.dart';
 import 'package:fosh_micromanipulator_app/foshma_colors.dart';
 import 'package:fosh_micromanipulator_app/foshma_icons.dart';
+import 'package:fosh_micromanipulator_app/providers/bluetooth_provider.dart';
+import 'package:provider/provider.dart';
 
 class BlueSettings extends StatefulWidget {
   @override
@@ -17,16 +16,17 @@ class BlueSettingsState extends State<BlueSettings> {
 
   bool _isConnecting = false;
   String _address;
-  StreamSubscription<BluetoothDiscoveryResult> _streamSubscription;
+  BluetoothProvider _bluetoothProvider; 
 
   @override
   void initState() {
     super.initState();
-    _discoverBlueDevices();
   }
 
   @override
   Widget build(BuildContext context) {
+    _bluetoothProvider = Provider.of<BluetoothProvider>(context);
+    
     return Positioned(
       top: 52.0,
       left: 20.0,
@@ -96,10 +96,10 @@ class BlueSettingsState extends State<BlueSettings> {
 
   _onTap2Connect() async {
     if (_address == null) {
-      _showSnackbar('Put an address');
+      showSnackbar(context, 'Put an address');
       return;
     }
-    _showSnackbar('trying connecting to device');
+    showSnackbar(context, 'trying connecting to device');
     setState(() {
       _isConnecting = true;
     });
@@ -110,80 +110,17 @@ class BlueSettingsState extends State<BlueSettings> {
     });
   }
 
-
-  _showSnackbar(String message) {
-    Scaffold.of(context).hideCurrentSnackBar();    
-    final snackBar = SnackBar(
-      content: Text(message),
-      backgroundColor: FoshMAColors.snackbarColor,
-      duration: Duration(seconds: 10),
-      action: SnackBarAction(
-        label: 'OK',
-        onPressed: () {
-          Scaffold.of(context).hideCurrentSnackBar();
-        },
-      ),
-    );
-    Scaffold.of(context).showSnackBar(snackBar);
-  }
-
   _connect2BluetoothDevice(String address) async {
     // Some simplest connection :F
     try {
-      await _checkBluetoothEnabled();
-      BluetoothConnection connection = await BluetoothConnection.toAddress(address);
+      await _bluetoothProvider.connect2Device(address);
       print('Connected to the device');
-      _showSnackbar('Connected to the device');
-
-      var dataToSend = Uint8List.fromList(utf8.encode("UP"));
-      connection.output.add(dataToSend);
-      
-      connection.input.listen((Uint8List data) {
-          _showSnackbar('Data incoming...');
-          print('Data incoming: ${ascii.decode(data)}');
-          connection.output.add(data); // Sending data
-
-          if (ascii.decode(data).contains('!')) {
-              connection.finish(); // Closing connection
-              print('Disconnecting by local host');
-              _showSnackbar('Disconnecting by local host');
-          }
-      }).onDone(() {
-        print('Disconnected by remote request');
-        _showSnackbar('Disconnected by remote request');
-      });
+      showSnackbar(context, 'Connected to the device');
       return true;
-    }
-    catch (exception) {
-        print('Cannot connect, exception occured');
-        _showSnackbar('Cannot connect to device, something is missing or error ocurred or bluetooth is not enabled');
-        return false;
+    } catch (exception) {
+      print('Cannot connect, exception occured');
+      showSnackbar(context, 'Cannot connect to device, something is missing or error ocurred or bluetooth is not enabled');
+      return false;
     }
   }
-
-  _checkBluetoothEnabled() async {
-    final bool isOn = await FlutterBluetoothSerial.instance.isEnabled;
-    if (!isOn) {
-      final requestResult = await FlutterBluetoothSerial.instance.requestEnable();
-      print('*** requestResult $requestResult');
-      if (!requestResult) {
-        throw Exception('bluetooth is not turned on');
-      }
-      return requestResult;
-    }
-    return isOn;
-  }
-
-  _discoverBlueDevices() async {
-    await _checkBluetoothEnabled();
-    _streamSubscription = FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
-      print('*** device found ${r.device.name} - ${r.device.address}\n');
-      // setState(() { results.add(r); });
-    });
-    
-    _streamSubscription.onDone(() {
-      // setState(() { isDiscovering = false; });
-    });
-  }
-
 }

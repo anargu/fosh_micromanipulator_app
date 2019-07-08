@@ -6,6 +6,8 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:fosh_micromanipulator_app/components/blue_settings.dart';
 import 'package:fosh_micromanipulator_app/components/move_controller.dart';
 import 'package:fosh_micromanipulator_app/foshma_colors.dart';
+import 'package:fosh_micromanipulator_app/providers/bluetooth_provider.dart';
+import 'package:provider/provider.dart';
 
 
 class VisorView extends StatefulWidget {
@@ -25,7 +27,6 @@ class VisorViewState extends State<VisorView> {
     super.initState();
     
     _initCamera();
-    // _startDiscovery();
   }
 
   @override
@@ -66,13 +67,16 @@ class VisorViewState extends State<VisorView> {
     return Scaffold(
       body: Builder(
         builder: (context) {
-          return Container(
-            child: Stack(
-              children: <Widget>[
-                childView,
-                MoveController(),
-                BlueSettings()
-              ]
+          return ChangeNotifierProvider(
+            builder: (context) => BluetoothProvider(),
+            child: Container(
+              child: Stack(
+                children: <Widget>[
+                  childView,
+                  MoveController(),
+                  BlueSettings()
+                ]
+              ),
             ),
           );
         },
@@ -95,21 +99,4 @@ class VisorViewState extends State<VisorView> {
       setState(() {});
     });
   }
-
-  // void _startDiscovery() async {
-  //   final bool isOn = await FlutterBluetoothSerial.instance.isEnabled;
-  //   if (!isOn) {
-  //     final requestResult = await FlutterBluetoothSerial.instance.requestEnable();
-  //     print('*** requestResult $requestResult');
-  //   }
-  //   _streamSubscription = FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
-  //     print('*** device found ${r.device.name} - ${r.device.address}\n');
-  //     setState(() { results.add(r); });
-  //   });
-    
-  //   _streamSubscription.onDone(() {
-  //     setState(() { isDiscovering = false; });
-  //   });
-  // }
-
 }

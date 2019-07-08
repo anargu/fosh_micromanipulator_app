@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   camera: ^0.5.2+1
   flutter_bluetooth_serial: ^0.1.0
+  provider: 3.0.0+1
 
 dev_dependencies:
   flutter_test:

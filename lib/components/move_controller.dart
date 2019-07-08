@@ -1,7 +1,10 @@
 
 import 'package:flutter/widgets.dart';
+import 'package:fosh_micromanipulator_app/components/snackbar.dart';
 import 'package:fosh_micromanipulator_app/foshma_colors.dart';
 import 'package:fosh_micromanipulator_app/foshma_icons.dart';
+import 'package:fosh_micromanipulator_app/providers/bluetooth_provider.dart';
+import 'package:provider/provider.dart';
 
 enum ActionType { UP, DOWN, LEFT, RIGHT }
 
@@ -39,6 +42,8 @@ class MoveControllerState extends State<MoveController> with SingleTickerProvide
     }
   ];
 
+  BluetoothProvider _bluetoothProvider; 
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +57,8 @@ class MoveControllerState extends State<MoveController> with SingleTickerProvide
 
   @override
   Widget build(BuildContext context) {
+    _bluetoothProvider = Provider.of<BluetoothProvider>(context);
+
     return Positioned(
       bottom: 20.0,
       right: 20.0,
@@ -84,8 +91,12 @@ class MoveControllerState extends State<MoveController> with SingleTickerProvide
 
   _onTapAction(ActionType action) {
     return () {
-      // animationController.forward();
-      print('action triggered ${action.toString()}');
+      try {
+        print('action triggered ${action.toString()}');
+        _bluetoothProvider.putValue(action.toString());
+      } catch (e) {
+        showSnackbar(context, e.toString());
+      }
     };
   }
 }
