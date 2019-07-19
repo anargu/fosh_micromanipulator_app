@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:fosh_micromanipulator_app/components/action_controller.dart';
 import 'package:fosh_micromanipulator_app/components/blue_settings.dart';
 import 'package:fosh_micromanipulator_app/components/move_controller.dart';
 import 'package:fosh_micromanipulator_app/foshma_colors.dart';
@@ -74,6 +75,7 @@ class VisorViewState extends State<VisorView> {
                 children: <Widget>[
                   childView,
                   MoveController(),
+                  ActionController(),
                   BlueSettings()
                 ]
               ),

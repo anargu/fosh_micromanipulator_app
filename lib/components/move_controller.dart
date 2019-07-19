@@ -1,12 +1,12 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:fosh_micromanipulator_app/components/snackbar.dart';
+import 'package:fosh_micromanipulator_app/constants.dart';
 import 'package:fosh_micromanipulator_app/foshma_colors.dart';
 import 'package:fosh_micromanipulator_app/foshma_icons.dart';
 import 'package:fosh_micromanipulator_app/providers/bluetooth_provider.dart';
 import 'package:provider/provider.dart';
 
-enum ActionType { UP, DOWN, LEFT, RIGHT }
 
 class MoveController extends StatefulWidget {
   @override
